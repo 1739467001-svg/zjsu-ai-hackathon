@@ -344,3 +344,19 @@ section{position:relative;z-index:2}
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001s!important;transition-duration:.2s!important}
 }
+
+/* ===== 学院 LOGO + 欢迎语（首屏） ===== */
+.hero-logos{display:flex;align-items:center;justify-content:center;gap:clamp(18px,4vw,46px);margin-bottom:30px;flex-wrap:wrap;opacity:0;animation:rise .9s 0s forwards}
+.hero-logos img{height:clamp(30px,4.2vw,46px);width:auto;opacity:.96;filter:drop-shadow(0 2px 14px rgba(120,180,255,.28))}
+.hero-logos .logo-div{width:1px;height:34px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.42),transparent)}
+.hero-welcome{display:inline-block;margin:20px auto 0;max-width:700px;padding:11px 24px;border-radius:999px;
+  font-size:clamp(13px,1.5vw,15px);letter-spacing:1.5px;color:var(--gold);line-height:1.7;
+  background:linear-gradient(90deg,rgba(245,210,122,.05),rgba(245,210,122,.13),rgba(245,210,122,.05));
+  border:1px solid rgba(245,210,122,.30);box-shadow:inset 0 0 28px rgba(245,210,122,.08);
+  opacity:0;animation:rise 1s .5s forwards}
+@media(max-width:560px){
+  .hero-logos{gap:14px;margin-bottom:20px}
+  .hero-logos img{height:26px}
+  .hero-logos .logo-div{display:none}
+  .hero-welcome{font-size:12px;letter-spacing:1px;padding:9px 16px}
+}
