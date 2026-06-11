@@ -4,9 +4,9 @@
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s,r=document)=>r.querySelector(s);
   const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
-  const VER = "1"; // 图片缓存版本：替换任何海报/缩略图后 +1（与 index.html 的 ?v 保持一致）
-  const IMG = s=>`assets/works/${s}.jpg?v=${VER}`;
-  const THUMB = s=>`assets/works/thumbs/${s}.jpg?v=${VER}`;
+  const VER = "2"; // 图片缓存版本：替换任何海报/缩略图后 +1（与 index.html 的 ?v 保持一致）
+  const IMG = s=>`assets/works/${s}.webp?v=${VER}`;
+  const THUMB = s=>`assets/works/thumbs/${s}.webp?v=${VER}`;
 
   /* ---------- 星空 ---------- */
   (function starfield(){
