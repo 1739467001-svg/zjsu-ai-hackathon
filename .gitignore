@@ -1,0 +1,3 @@
+server/*.db
+server/__pycache__/
+.DS_Store

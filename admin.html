@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex"/>
+<title>AI 黑客松 · 后台管理</title>
+<style>
+  :root{--bg:#070a18;--ink:#eaf0ff;--muted:#9aa6cf;--gold:#f5d27a;--cyan:#6fd3ff;--line:rgba(150,170,255,.16);--card:rgba(18,24,52,.6);--red:#ff7a8a;--green:#4fcf86}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans SC",system-ui,sans-serif;background:radial-gradient(1000px 600px at 80% -10%,rgba(80,60,160,.25),transparent),#05060f;color:var(--ink);padding:28px clamp(14px,4vw,48px)}
+  h1{font-size:24px;letter-spacing:1px}.sub{color:var(--muted);font-size:13px;margin-top:6px}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}
+  input,select,textarea{padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:rgba(8,11,26,.7);color:var(--ink);font-size:14px;font-family:inherit}
+  input{min-width:200px}
+  button{padding:9px 18px;border-radius:10px;border:1px solid var(--gold);background:var(--gold);color:#1a1405;font-weight:700;cursor:pointer;font-size:14px}
+  button.ghost{background:transparent;color:var(--gold)}
+  button.mini{padding:4px 12px;font-size:12px;border-radius:8px}
+  button.del{border-color:var(--red);background:transparent;color:var(--red)}
+  button.del:hover{background:rgba(255,122,138,.15)}
+  button.edit{border-color:var(--cyan);background:transparent;color:var(--cyan)}
+  button.edit:hover{background:rgba(111,211,255,.15)}
+  .cards{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 22px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 24px;min-width:130px}
+  .stat b{display:block;font-size:30px;color:#fff}.stat span{color:var(--muted);font-size:12px;letter-spacing:2px}
+  h2{font-size:16px;margin:24px 0 10px;color:var(--gold)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+  .panel .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .panel textarea{flex:1;min-width:220px;min-height:42px;resize:vertical}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--cyan);font-weight:700;background:rgba(10,14,30,.6)}
+  tr:last-child td{border-bottom:none}
+  td.num{font-variant-numeric:tabular-nums}.actions{white-space:nowrap}
+  .name{color:var(--cyan);font-weight:700}.work{color:var(--gold)}
+  .err{color:var(--red);margin:10px 0}
+  .wrap{max-height:46vh;overflow:auto;border-radius:12px}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+  <h1>✦ AI 黑客松 · 后台管理</h1>
+  <p class="sub">点赞 / 评论 实时统计与管理 · 仅管理员可见</p>
+  <div class="bar">
+    <input id="key" type="password" placeholder="输入后台密钥"/>
+    <button id="load">登录 / 刷新</button>
+    <span id="status" class="muted"></span>
+  </div>
+  <div id="err" class="err"></div>
+
+  <div id="out" style="display:none">
+    <div class="cards">
+      <div class="stat"><b id="tLikes">0</b><span>总点赞</span></div>
+      <div class="stat"><b id="tCmts">0</b><span>总评论</span></div>
+      <div class="stat"><b id="tWorks">0</b><span>被互动作品</span></div>
+    </div>
+
+    <h2>＋ 新增评论（以管理员或指定昵称发布）</h2>
+    <div class="panel">
+      <div class="row">
+        <select id="addSlug" title="选择作品"></select>
+        <input id="addName" placeholder="昵称（留空=管理员）" maxlength="24" style="min-width:160px"/>
+        <textarea id="addText" placeholder="评论内容…" maxlength="500"></textarea>
+        <button id="addBtn">发布</button>
+      </div>
+    </div>
+
+    <h2>按作品汇总</h2>
+    <div class="wrap"><table id="byWork"><thead><tr><th>作品</th><th>选手</th><th>点赞</th><th>评论</th></tr></thead><tbody></tbody></table></div>
+
+    <h2>全部评论（可编辑 / 删除） <span class="muted" id="cmtCount"></span></h2>
+    <div class="bar"><input id="search" placeholder="🔍 搜索昵称 / 作品 / 内容" style="min-width:260px"/></div>
+    <div class="wrap"><table id="cmts"><thead><tr><th>昵称</th><th>作品</th><th>内容</th><th>时间</th><th>操作</th></tr></thead><tbody></tbody></table></div>
+
+    <h2>全部点赞（可删除）</h2>
+    <div class="wrap"><table id="likes"><thead><tr><th>昵称</th><th>作品</th><th>时间</th><th>操作</th></tr></thead><tbody></tbody></table></div>
+  </div>
+
+<script src="assets/data.js?v=1"></script>
+<script>
+  const $=s=>document.querySelector(s);
+  const TITLE={}, AUTHOR={};
+  (window.WORKS||[]).forEach(w=>{TITLE[w.slug]=w.title;AUTHOR[w.slug]=w.author||"—";});
+  const esc=s=>{const d=document.createElement("div");d.textContent=s==null?"":s;return d.innerHTML;};
+  const tname=s=>esc(TITLE[s]||s);
+  const tm=ts=>{const d=new Date(ts*1000),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;};
+  const KK="fx_admin_key";
+  const key=()=>$("#key").value.trim();
+  $("#key").value=localStorage.getItem(KK)||"";
+  let DATA={comments:[],likes:[],by_slug:{},totals:{likes:0,comments:0}};
+
+  (function(){const sel=$("#addSlug");(window.WORKS||[]).forEach(w=>{const o=document.createElement("option");o.value=w.slug;o.textContent=w.title;sel.appendChild(o);});})();
+
+  async function load(){
+    const k=key(); if(!k){$("#err").textContent="请输入密钥";return;}
+    localStorage.setItem(KK,k); $("#err").textContent=""; $("#status").textContent="加载中…";
+    try{
+      const r=await fetch("/api/all?key="+encodeURIComponent(k),{cache:"no-store"});
+      if(r.status===403) throw new Error("密钥不正确");
+      if(!r.ok) throw new Error("请求失败（"+r.status+"）");
+      DATA=await r.json(); render(); $("#status").textContent="更新于 "+new Date().toLocaleTimeString();
+    }catch(e){ $("#out").style.display="none"; $("#err").textContent="读取失败："+e.message+"（请在云服务器/域名站点打开本页）"; $("#status").textContent="";}
+  }
+  async function adminPost(action, payload){
+    const body=Object.assign({key:key(),action},payload||{});
+    const r=await fetch("/api/admin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error((await r.json().catch(()=>({}))).error||("HTTP "+r.status));
+    return r.json();
+  }
+  const emptyRow=(n,t)=>`<tr><td colspan="${n}" class="muted">${t||"暂无数据"}</td></tr>`;
+
+  function render(){
+    $("#out").style.display="block";
+    $("#tLikes").textContent=DATA.totals.likes; $("#tCmts").textContent=DATA.totals.comments;
+    $("#tWorks").textContent=Object.keys(DATA.by_slug||{}).length;
+    const rows=Object.entries(DATA.by_slug||{}).sort((a,b)=>((b[1].likes||0)+(b[1].comments||0))-((a[1].likes||0)+(a[1].comments||0)));
+    $("#byWork tbody").innerHTML=rows.map(([s,v])=>`<tr><td class="work">${tname(s)}</td><td>${esc(AUTHOR[s]||"—")}</td><td class="num">${v.likes||0}</td><td class="num">${v.comments||0}</td></tr>`).join("")||emptyRow(4);
+    renderComments(); renderLikes();
+  }
+  function renderComments(){
+    const q=($("#search").value||"").trim().toLowerCase();
+    let cs=DATA.comments||[];
+    if(q) cs=cs.filter(c=>(c.name+" "+(TITLE[c.slug]||c.slug)+" "+c.text).toLowerCase().includes(q));
+    $("#cmtCount").textContent="（共 "+cs.length+" 条）";
+    $("#cmts tbody").innerHTML=cs.map(c=>`<tr>
+      <td class="name">${esc(c.name)}</td><td class="work">${tname(c.slug)}</td>
+      <td>${esc(c.text)}</td><td>${tm(c.ts)}</td>
+      <td class="actions"><button class="mini edit" data-edit="${c.id}">编辑</button> <button class="mini del" data-del="${c.id}">删除</button></td>
+    </tr>`).join("")||emptyRow(5);
+  }
+  function renderLikes(){
+    $("#likes tbody").innerHTML=(DATA.likes||[]).map(l=>`<tr>
+      <td class="name">${esc(l.name)}</td><td class="work">${tname(l.slug)}</td><td>${tm(l.ts)}</td>
+      <td class="actions"><button class="mini del" data-dellike="${esc(l.slug)}|${esc(l.name)}">删除</button></td>
+    </tr>`).join("")||emptyRow(4);
+  }
+
+  document.addEventListener("click", async e=>{
+    const ed=e.target.closest("[data-edit]"), dl=e.target.closest("[data-del]"), dk=e.target.closest("[data-dellike]");
+    try{
+      if(ed){
+        const id=+ed.dataset.edit; const cur=(DATA.comments.find(c=>c.id===id)||{}).text||"";
+        const t=prompt("编辑评论内容：", cur); if(t===null) return;
+        if(!t.trim()){alert("内容不能为空");return;}
+        await adminPost("edit_comment",{id,text:t.trim()}); await load();
+      }else if(dl){
+        const id=+dl.dataset.del; if(!confirm("确定删除这条评论？不可恢复")) return;
+        await adminPost("del_comment",{id}); await load();
+      }else if(dk){
+        const i=dk.dataset.dellike.indexOf("|"); const slug=dk.dataset.dellike.slice(0,i), name=dk.dataset.dellike.slice(i+1);
+        if(!confirm("确定删除 "+name+" 对该作品的点赞？")) return;
+        await adminPost("del_like",{slug,name}); await load();
+      }
+    }catch(err){ alert("操作失败："+err.message); }
+  });
+  $("#addBtn").addEventListener("click", async ()=>{
+    const slug=$("#addSlug").value, name=$("#addName").value.trim(), text=$("#addText").value.trim();
+    if(!text){alert("请填写评论内容");return;}
+    try{ await adminPost("add_comment",{slug,name,text}); $("#addText").value=""; await load(); }
+    catch(err){ alert("发布失败："+err.message); }
+  });
+  $("#search").addEventListener("input", renderComments);
+  $("#load").onclick=load;
+  $("#key").addEventListener("keydown",e=>{if(e.key==="Enter")load();});
+  if($("#key").value) load();
+</script>
+</body>
+</html>

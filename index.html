@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>首届 AI 黑客松 · 信电学院 × 人工智能学院 作品星河</title>
+<meta name="description" content="浙江工商大学信电学院、人工智能学院首届 AI 黑客松大赛 · 18 个 AI 赋能校园的作品星河长廊。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=1" />
+</head>
+<body>
+
+<!-- 星空画布（统一裁剪层，避免装饰元素溢出产生横向滚动） -->
+<div class="bg-layer">
+  <canvas id="starfield"></canvas>
+  <div class="nebula nebula-a"></div>
+  <div class="nebula nebula-b"></div>
+  <div class="nebula nebula-c"></div>
+  <div class="grain"></div>
+</div>
+
+<!-- 导航 -->
+<header class="nav" id="nav">
+  <a class="brand" href="#top">
+    <span class="brand-mark">✦</span>
+    <span class="brand-text">AI 黑客松<small>ZJSU · 信电 × 人工智能</small></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#gallery">星河长廊</a>
+    <a href="#constellation">星座图谱</a>
+    <a href="#about">关于</a>
+  </nav>
+</header>
+
+<!-- 首屏 -->
+<section class="hero" id="top">
+  <div class="hero-rings"><span></span><span></span><span></span></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">✧ ZJSU · 信电学院 × 人工智能学院 · 首届 AI 黑客松 ✧</p>
+    <h1 class="hero-title">首届 AI 黑客松</h1>
+    <p class="hero-sub">从想法到作品 · AI 赋能校园的作品星河长廊</p>
+    <p class="hero-desc">每一个作品，都是一颗被点亮的星。<br/>18 支团队，把校园里的真实问题，写成同一片 AI 星河。</p>
+    <div class="hero-stats" id="heroStats">
+      <div class="stat"><b data-count="18">0</b><span>作品 WORKS</span></div>
+      <div class="stat"><b data-count="34">0</b><span>参赛者</span></div>
+      <div class="stat"><b data-count="5">0</b><span>赛道星座</span></div>
+      <div class="stat"><b data-inf="1">∞</b><span>POSSIBILITY</span></div>
+    </div>
+    <a class="hero-cta" href="#gallery">进入星河 <span>↓</span></a>
+  </div>
+  <div class="scroll-cue"><span></span></div>
+</section>
+
+<!-- 星河长廊 轮播 -->
+<section class="gallery" id="gallery">
+  <div class="section-head">
+    <p class="kicker">✦ THE GALAXY ✦</p>
+    <h2>星河长廊</h2>
+    <p class="lead" id="galleryLead">滑动、拖拽，或静待星河自转——逐一点亮黑客松作品。</p>
+  </div>
+
+  <div class="coverflow" id="coverflow">
+    <div class="cf-stage" id="cfStage"></div>
+    <button class="cf-btn cf-prev" id="cfPrev" aria-label="上一个">‹</button>
+    <button class="cf-btn cf-next" id="cfNext" aria-label="下一个">›</button>
+  </div>
+  <div class="cf-meta" id="cfMeta">
+    <div class="cf-track-tag" id="cfTrack"></div>
+    <h3 id="cfTitle"></h3>
+    <p class="cf-en" id="cfEn"></p>
+    <p class="cf-tagline" id="cfTagline"></p>
+    <div class="cf-author" id="cfAuthor"></div>
+  </div>
+  <div class="cf-dots" id="cfDots"></div>
+</section>
+
+<!-- 星座图谱 网格 -->
+<section class="constellation" id="constellation">
+  <div class="section-head">
+    <p class="kicker">✦ THE CONSTELLATIONS ✦</p>
+    <h2>星座图谱</h2>
+    <p class="lead">5 条赛道，5 座星座。点亮任意一颗星，看见它背后的故事。</p>
+    <p class="live-totals" id="liveTotals" style="display:none"></p>
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div class="star-grid" id="starGrid"></div>
+</section>
+
+<!-- 关于 -->
+<section class="about" id="about">
+  <div class="about-card">
+    <p class="kicker">✦ ABOUT ✦</p>
+    <h2>关于这片星河</h2>
+    <p>这是 <b>浙江工商大学信电学院、人工智能学院首届 AI 黑客松大赛</b> 的作品展。本届以学院真实业务需求为出发点，建立一套「从创意到可交付软件」的标准化流程——需求对齐、自主开发、材料提交与终评答辩。从智慧学务到评奖测评，从空间预约到科研实验与院务文化，每支团队都在回答同一个问题：<i>当 AI 走进校园的每个角落，学习与治理会变成什么样？</i></p>
+    <p>这里收录了 18 个走进场景、解决真实问题的作品。它们大小不一、亮度各异，却共享同一片夜空。愿每一束星光，都被看见。</p>
+    <p class="about-sign">✦ 一个好的创意，只有真正走进场景、解决问题，才算完成了从「想法」到「作品」的第一步 ✦</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <p class="foot-logo">浙江工商大学 · 首届 AI 黑客松</p>
+  <p class="foot-sub">信电学院 × 人工智能学院 · 作品星河长廊 · 2026</p>
+</footer>
+
+<!-- 灯箱 -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lb-backdrop" id="lbBackdrop"></div>
+  <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一个">‹</button>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="下一个">›</button>
+  <div class="lb-content">
+    <div class="lb-figure"><img id="lbImg" alt="" /></div>
+    <div class="lb-info">
+      <div class="lb-track" id="lbTrack"></div>
+      <h3 id="lbTitle"></h3>
+      <p class="lb-en" id="lbEn"></p>
+      <p class="lb-tagline" id="lbTagline"></p>
+      <div class="lb-highlight" id="lbHighlight"></div>
+      <p class="lb-blurb" id="lbBlurb"></p>
+      <div class="lb-tags" id="lbTags"></div>
+      <div class="lb-author" id="lbAuthor"></div>
+      <div class="lb-wechat" id="lbWechat"></div>
+      <div class="lb-index" id="lbIndex"></div>
+      <div class="lb-qr" id="lbQr"></div>
+
+      <div class="lb-engage" id="lbEngage">
+        <div class="eng-bar">
+          <button class="like-btn" id="likeBtn" aria-label="点赞">
+            <span class="heart">♡</span><b id="likeCount">0</b>
+          </button>
+          <input class="eng-name" id="engName" placeholder="填写昵称后即可点赞评论" maxlength="24" />
+        </div>
+        <div class="cmt-form">
+          <textarea id="cmtText" rows="2" placeholder="写下你的评论…（无需注册）" maxlength="500"></textarea>
+          <button class="cmt-send" id="cmtSend">发送</button>
+        </div>
+        <div class="cmt-tip" id="cmtTip"></div>
+        <div class="cmt-list" id="cmtList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/data.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>
