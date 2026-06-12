@@ -364,3 +364,6 @@ section{position:relative;z-index:2}
 /* 主办单位（页脚） */
 .foot-host{font-family:var(--sans);font-size:13px;letter-spacing:1px;color:var(--gold);opacity:.92;margin-top:16px}
 @media(max-width:560px){ .foot-host{font-size:12px;padding:0 18px;line-height:1.6} }
+
+/* 移动端主标题收紧，避免"大赛"单独换行 */
+@media(max-width:560px){ .hero-title{font-size:12.5vw;letter-spacing:1px} }
