@@ -360,3 +360,7 @@ section{position:relative;z-index:2}
   .hero-logos .logo-div{display:none}
   .hero-welcome{font-size:12px;letter-spacing:1px;padding:9px 16px}
 }
+
+/* 主办单位（页脚） */
+.foot-host{font-family:var(--sans);font-size:13px;letter-spacing:1px;color:var(--gold);opacity:.92;margin-top:16px}
+@media(max-width:560px){ .foot-host{font-size:12px;padding:0 18px;line-height:1.6} }
